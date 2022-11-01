@@ -15,7 +15,7 @@ resource "azurerm_linux_virtual_machine" "vpn" {
   name                = "vpn-01"
   resource_group_name = azurerm_resource_group.sculk.name
   location            = azurerm_resource_group.sculk.location
-  size                = "Standard_B1"
+  size                = "Standard_B1s"
   admin_username      = "astr0n8t"
   network_interface_ids = [
     azurerm_network_interface.wan.id,
@@ -33,8 +33,8 @@ resource "azurerm_linux_virtual_machine" "vpn" {
 
   source_image_reference {
     publisher = "Canonical"
-    offer     = "UbuntuServer"
-    sku       = "22.04-LTS"
+    offer     = "0001-com-ubuntu-minimal-jammy"
+    sku       = "minimal-22_04-lts"
     version   = "latest"
   }
 }
