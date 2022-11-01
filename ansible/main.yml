@@ -1,0 +1,4 @@
+---
+- import_playbook: general_setup.yml
+- import_playbook: deploy_wireguard.yml
+- import_playbook: deploy_containers.yml

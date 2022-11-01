@@ -1,0 +1,50 @@
+vaultwarden.{$DOMAIN} {
+  log {
+    level INFO
+  }
+  # Uncomment this if you want to get a cert via ACME (Let's Encrypt or ZeroSSL).
+  tls {$EMAIL}
+
+  # This setting may have compatibility issues with some browsers
+  # (e.g., attachment downloading on Firefox). Try disabling this
+  # if you encounter issues.
+  encode gzip
+
+  #Uncomment to improve security (WARNING: only use if you understand the implications!)
+  header {
+       # Enable HTTP Strict Transport Security (HSTS)
+       Strict-Transport-Security "max-age=31536000;"
+       # Enable cross-site filter (XSS) and tell browser to block detected attacks
+       X-XSS-Protection "1; mode=block"
+       # Prevent search engines from indexing (optional)
+       X-Robots-Tag "none"
+       # Server name removing
+       -Server
+  }
+
+  # Notifications redirected to the websockets server
+  reverse_proxy /notifications/hub vaultwarden:3012
+
+  # Proxy everything else to Rocket
+  reverse_proxy vaultwarden:80 {
+       # Send the true remote IP to Rocket, so that vaultwarden can put this in the
+       # log, so that fail2ban can ban the correct IP.
+       header_up X-Real-IP {remote_host}
+  }
+}
+
+dns.{$DOMAIN} {
+  tls {$EMAIL}
+  @internal {
+    remote_ip 192.168.0.0/16
+  }
+  handle @internal {
+    reverse_proxy adguard
+  }
+  handle /dns-query/* {
+    reverse_proxy adguard
+  }
+  respond "Forbidden" 403 {
+	  close
+  }
+}

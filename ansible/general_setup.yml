@@ -1,0 +1,83 @@
+- hosts: all
+  name: Perform Initial Setup and Hardening
+  tags: [ always ]
+  tasks:
+    - name: Include vault vars
+      include_vars:
+        file: vault_vars.yml
+
+    - name: Install packages
+      apt:
+        name:
+          - ufw
+          - vim
+          - tmux
+          - zsh
+          - sudo
+          - docker.io
+          - docker-compose
+          - python3-docker
+          - python3-pip
+          - resolvconf
+        state: present
+
+    - name: Install docker compose
+      pip:
+        name:
+          - docker-compose
+        state: present
+
+    - name: Enable UFW systemd
+      ansible.builtin.systemd:
+        name: ufw.service
+        state: started
+        enabled: yes
+
+    - name: Enable Docker
+      ansible.builtin.systemd:
+        name: docker.service
+        state: started
+        enabled: yes
+
+    - community.general.ufw:
+        rule: allow
+        port: ssh
+        proto: tcp
+
+    - name: Enable UFW
+      community.general.ufw:
+        state: enabled
+        policy: deny
+
+    - name: Set logging
+      community.general.ufw:
+        logging: 'on'
+
+    - name: Add astr0n8t user
+      ansible.builtin.user:
+        name: astr0n8t
+        comment: astr0n8t
+        groups: sudo
+        password: "{{ user_password_hash }}"
+        shell: /bin/bash
+
+    - name: Create SSH Directory
+      file:
+        path: /home/astr0n8t/.ssh
+        state: directory
+        owner: astr0n8t
+        mode: '0700'
+
+    - name: Copy SSH authorized keys
+      copy:
+        src: /root/.ssh/authorized_keys
+        dest: /home/astr0n8t/.ssh/authorized_keys
+        remote_src: yes
+        owner: astr0n8t
+        force: yes
+
+    - name: Set perms on SSH key
+      file:
+        path: /home/astr0n8t/.ssh/authorized_keys
+        owner: astr0n8t
+        mode: '0600'

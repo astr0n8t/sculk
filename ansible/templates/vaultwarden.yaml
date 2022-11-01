@@ -1,0 +1,23 @@
+version: '3.4'
+
+services:
+  vaultwarden:
+    container_name: vaultwarden
+    image: vaultwarden/server:latest
+    restart: unless-stopped
+    environment:
+        DOMAIN: "https://vaultwarden.astr0n8t.duckdns.org"
+        WEBSOCKET_ENABLED: "true"
+        SIGNUPS_ALLOWED: "false"
+    volumes:
+      - "vaultwarden_vol:/data/"
+    networks:
+      - caddy
+
+volumes:
+  vaultwarden_vol:
+    external: true
+
+networks:
+  caddy:
+    external: true

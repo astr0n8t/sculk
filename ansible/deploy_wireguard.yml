@@ -1,0 +1,44 @@
+- hosts: all
+  name: Deploy WireGuard to Host
+  tags: [ always ]
+  tasks:
+    - name: Include vault vars
+      include_vars:
+        file: vault_vars.yml
+
+    - name: Install WireGuard
+      apt:
+        name:
+          - wireguard-dkms
+          - wireguard-tools
+        state: present
+      register: wireguard
+
+    - name: Copy the WireGuard 0 configuration
+      template:
+        src: wg0.conf
+        dest: /etc/wireguard/wg0.conf
+
+    - name: Enable IP Forwarding
+      ansible.posix.sysctl:
+        name: net.ipv4.ip_forward
+        value: '1'
+        sysctl_set: yes
+        state: present
+        reload: yes
+
+    - name: Enable Wireguard 0
+      ansible.builtin.systemd:
+        name: wg-quick@wg0.service
+        enabled: yes
+
+    
+    - name: Allow wireguard 0 through UFW
+      community.general.ufw:
+        rule: allow
+        port: 51820
+        proto: udp
+
+    - name: Reboot to load kernel modules and start Wireguard
+      reboot:
+      when: wireguard.changed

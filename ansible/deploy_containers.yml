@@ -1,0 +1,102 @@
+- hosts: all
+  name: Create vaultwarden containers
+  tags: [ always ]
+  tasks:
+    - name: Include vault vars
+      include_vars:
+        file: vault_vars.yml
+
+    - name: Implement caddy network
+      community.docker.docker_network:
+        name: caddy
+
+    - name: Create docker compose configuration directory
+      file:
+        path: /etc/compose
+        state: directory
+        mode: '0755'
+
+    - name: Create vaultwarden configuration directory
+      file:
+        path: /etc/compose/vaultwarden
+        state: directory
+        mode: '0755'
+
+    - name: Copy the compose file
+      template:
+        src: vaultwarden.yaml
+        dest: /etc/compose/vaultwarden/docker-compose.yaml
+        mode: 0600
+
+    - name: Create vaultwarden volume
+      community.docker.docker_volume:
+        name: vaultwarden_vol
+
+- hosts: all
+  name: Create adguard containers
+  tags: [ always ]
+  tasks:
+    - name: Include vault vars
+      include_vars:
+        file: vault_vars.yml
+
+    - name: Create adguard etc directory
+      file:
+        path: /etc/adguard
+        state: directory
+        mode: '0755'
+
+    - name: Create adguard configuration directory
+      file:
+        path: /etc/compose/adguard
+        state: directory
+        mode: '0755'
+
+    - name: Copy the compose file
+      template:
+        src: adguard.yaml
+        dest: /etc/compose/adguard/docker-compose.yaml
+        mode: 0600
+
+- hosts: all
+  name: Create reverse proxy containers
+  tags: [ always ]
+  tasks:
+    - name: Include vault vars
+      include_vars:
+        file: vault_vars.yml
+
+    - name: Create caddy configuration directory
+      file:
+        path: /etc/compose/caddy
+        state: directory
+        mode: '0755'
+
+    - name: Copy the compose file
+      template:
+        src: caddy.yaml
+        dest: /etc/compose/caddy/docker-compose.yaml
+        mode: 0600
+
+    - name: Create caddy configuration directory
+      file:
+        path: /etc/caddy
+        state: directory
+        mode: '0755'
+
+    - name: Copy the Caddyfile
+      copy:
+        src: Caddyfile
+        dest: /etc/caddy/Caddyfile
+
+    - name: Start caddy
+      community.docker.docker_compose:
+        project_src: /etc/compose/caddy
+
+    - name: Start vaultwarden
+      community.docker.docker_compose:
+        project_src: /etc/compose/vaultwarden
+
+    - name: Start adguard
+      community.docker.docker_compose:
+        project_src: /etc/compose/adguard

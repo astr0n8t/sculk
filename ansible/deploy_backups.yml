@@ -1,0 +1,22 @@
+- hosts: all
+  name: Setup automated restic container volume backups
+  tags: [ always ]
+  tasks:
+    - name: Include vault vars
+      include_vars:
+        file: vault_vars.yml
+
+    - name: Copy the backup script
+      copy:
+        src: container_backup.sh
+        dest: /usr/bin/container_backup
+        mode: 0700
+
+    - name: Add line to root crontab
+      cron:
+        name: Backup container volumes
+        minute: '0'
+        hour: '2'
+        user: root
+        job: "/usr/bin/container_backup"
+        cron_file: ansible_container-backup

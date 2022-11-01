@@ -1,0 +1,27 @@
+version: '3.4'
+
+services:
+  caddy:
+    container_name: caddy
+    image: caddy:2
+    restart: unless-stopped
+    environment:
+      DOMAIN: "astr0n8t.dnsduck.org"
+      EMAIL: "contact@nathanhigley.com"
+    volumes:
+      - "/etc/caddy/Caddyfile:/etc/caddy/Caddyfile:ro"
+      - "caddy_config:/config"
+      - "caddy_data_vol:/data"
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - caddy
+
+volumes:
+  caddy_config:
+  caddy_data_vol:
+
+networks:
+  caddy:
+    external: true
