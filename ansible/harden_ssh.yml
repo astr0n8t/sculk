@@ -1,9 +1,9 @@
 - hosts: all
   name: Harden SSH
-  tags: [ always ]
+  tags: [always]
   tasks:
     - name: Include vault vars
-      include_vars:
+      ansible.builtin.include_vars:
         file: vault_vars.yml
 
     - name: Allow SSH through Wireguard

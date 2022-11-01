@@ -48,4 +48,5 @@ CMD [ "sleep", "infinity" ]
 
 # [Optional] Uncomment this section to install additional OS packages.
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends ansible ansible-lint
+    && apt-get -y install --no-install-recommends python3 python3-pip \
+    && pip3 install ansible ansible-lint
