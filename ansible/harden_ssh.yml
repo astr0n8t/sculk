@@ -12,7 +12,7 @@
         direction: in
         interface: wg0
         from_ip: any
-        to_ip: 192.168.150.1/32
+        to_ip: 192.168.71.1/32
         port: 22
         proto: tcp
 
@@ -21,4 +21,4 @@
         rule: allow
         port: ssh
         proto: tcp
-        delete: yes
+        delete: true

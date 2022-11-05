@@ -1,3 +1,5 @@
 all:
   hosts:
     sculk:
+      ansible_user: "astr0n8t"
+      ansible_host: "sculk.astr0n8t.duckdns.org"

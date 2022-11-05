@@ -3,8 +3,9 @@ vaultwarden.{$DOMAIN} {
     level INFO
   }
   # Uncomment this if you want to get a cert via ACME (Let's Encrypt or ZeroSSL).
-  tls {$EMAIL}
-
+  tls {
+    dns duckdns {$DUCKDNS_TOKEN}
+  }
   # This setting may have compatibility issues with some browsers
   # (e.g., attachment downloading on Firefox). Try disabling this
   # if you encounter issues.
@@ -34,16 +35,26 @@ vaultwarden.{$DOMAIN} {
 }
 
 dns.{$DOMAIN} {
-  tls {$EMAIL}
+  log {
+    level INFO
+  }
+  # Uncomment this if you want to get a cert via ACME (Let's Encrypt or ZeroSSL).
+  tls {
+    dns duckdns {$DUCKDNS_TOKEN}
+  }
+  # Check if internal IP address
   @internal {
     remote_ip 192.168.0.0/16
   }
+  # If internal handle no matter what
   handle @internal {
     reverse_proxy adguard
   }
+  # If DNS over HTTPS query handle no matter what
   handle /dns-query/* {
     reverse_proxy adguard
   }
+  # Otherwise respond with forbidden
   respond "Forbidden" 403 {
 	  close
   }

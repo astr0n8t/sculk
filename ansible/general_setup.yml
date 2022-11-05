@@ -1,13 +1,14 @@
 - hosts: all
   name: Perform Initial Setup and Hardening
-  tags: [ always ]
+  tags: [always]
+  become: true
   tasks:
     - name: Include vault vars
-      include_vars:
+      ansible.builtin.include_vars:
         file: vault_vars.yml
 
     - name: Install packages
-      apt:
+      ansible.builtin.apt:
         name:
           - ufw
           - vim
@@ -20,9 +21,10 @@
           - python3-pip
           - resolvconf
         state: present
+        update_cache: true
 
     - name: Install docker compose
-      pip:
+      ansible.builtin.pip:
         name:
           - docker-compose
         state: present
@@ -31,15 +33,16 @@
       ansible.builtin.systemd:
         name: ufw.service
         state: started
-        enabled: yes
+        enabled: true
 
     - name: Enable Docker
       ansible.builtin.systemd:
         name: docker.service
         state: started
-        enabled: yes
+        enabled: true
 
-    - community.general.ufw:
+    - name: Allow temporary general SSH access
+      community.general.ufw:
         rule: allow
         port: ssh
         proto: tcp
@@ -58,26 +61,12 @@
         name: astr0n8t
         comment: astr0n8t
         groups: sudo
-        password: "{{ user_password_hash }}"
+        password: "{{ sculk_user_password_hash }}"
         shell: /bin/bash
 
-    - name: Create SSH Directory
-      file:
-        path: /home/astr0n8t/.ssh
-        state: directory
-        owner: astr0n8t
-        mode: '0700'
-
-    - name: Copy SSH authorized keys
-      copy:
-        src: /root/.ssh/authorized_keys
-        dest: /home/astr0n8t/.ssh/authorized_keys
-        remote_src: yes
-        owner: astr0n8t
-        force: yes
-
-    - name: Set perms on SSH key
-      file:
-        path: /home/astr0n8t/.ssh/authorized_keys
-        owner: astr0n8t
-        mode: '0600'
+    - name: Set authorized keys
+      ansible.posix.authorized_key:
+        user: astr0n8t
+        state: present
+        key: "{{ lookup('file', 'authorized_keys') }}"
+        exclusive: true

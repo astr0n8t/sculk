@@ -1,2 +1,0 @@
-ansible_user: astr0n8t
-ansible_host: "{{ duckdns_domain }}"

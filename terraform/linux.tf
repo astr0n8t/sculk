@@ -34,7 +34,7 @@ resource "azurerm_linux_virtual_machine" "sculk" {
   source_image_reference {
     publisher = "Canonical"
     offer     = "0001-com-ubuntu-minimal-jammy"
-    sku       = "minimal-22_04-lts"
+    sku       = "minimal-22_04-lts-gen2"
     version   = "latest"
   }
 }

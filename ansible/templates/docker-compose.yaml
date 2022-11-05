@@ -1,0 +1,53 @@
+version: '3.4'
+
+services:
+  caddy:
+    container_name: caddy
+    build: /etc/compose/caddy/
+    restart: unless-stopped
+    environment:
+      DOMAIN: "{{ duckdns_domain }}"
+      EMAIL: "{{ letsencrypt_email }}"
+      DUCKDNS_TOKEN: "{{ duckdns_token }}"
+    volumes:
+      - "/etc/caddy/Caddyfile:/etc/caddy/Caddyfile:ro"
+      - "caddy_config:/config"
+      - "caddy_data_vol:/data"
+    ports:
+      - "192.168.71.1:80:80/tcp"
+      - "192.168.71.1:443:443/tcp"
+  adguard:
+    container_name: adguard
+    image: adguard/adguardhome:latest
+    restart: unless-stopped
+    volumes:
+      - "adguard_work:/opt/adguardhome/work"
+      - "/etc/adguard/:/opt/adguardhome/conf/"
+    ports:
+      - "192.168.71.1:53:53/udp"
+      - "192.168.71.1:53:53/tcp"
+  vaultwarden:
+    container_name: vaultwarden
+    image: vaultwarden/server:latest
+    restart: unless-stopped
+    environment:
+        DOMAIN: "https://vaultwarden.astr0n8t.duckdns.org"
+        WEBSOCKET_ENABLED: "true"
+        SIGNUPS_ALLOWED: "true"
+    volumes:
+      - "vaultwarden_vol:/data/"
+
+volumes:
+  caddy_config:
+  caddy_data_vol:
+  adguard_work:
+  vaultwarden_vol:
+    external: true
+
+
+
+
+
+
+
+
