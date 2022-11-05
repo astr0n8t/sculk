@@ -7,12 +7,12 @@ resource "azurerm_network_interface" "wan" {
     name                          = "wan"
     subnet_id                     = azurerm_subnet.sculk-subnet.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.vpn-pip.id
+    public_ip_address_id          = azurerm_public_ip.sculk-pip.id
   }
 }
 
-resource "azurerm_linux_virtual_machine" "vpn" {
-  name                = "vpn-01"
+resource "azurerm_linux_virtual_machine" "sculk" {
+  name                = "sculk-01"
   resource_group_name = azurerm_resource_group.sculk.name
   location            = azurerm_resource_group.sculk.location
   size                = "Standard_B1s"

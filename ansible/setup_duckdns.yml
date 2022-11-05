@@ -1,0 +1,17 @@
+---
+- hosts: localhost
+  name: Setup DuckDNS
+  tags: [always]
+  tasks:
+    - name: Include vault vars
+      ansible.builtin.include_vars:
+        file: vault_vars.yml
+
+    - name: Set the DNS Record
+      ansible.builtin.uri:
+        url: "https://www.duckdns.org/update?domains={{ duckdns_domain }}&token={{ duckdns_token }}&ip={{ public_ip_address }}"
+        return_content: true
+      register: duckdns
+      changed_when: "'OK' in duckdns.content"
+      failed_when: "'KO' in duckdns.content"
+      no_log: true

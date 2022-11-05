@@ -1,5 +1,5 @@
-resource "azurerm_network_security_group" "vpn-nsg" {
-  name                = "VPN-NSG"
+resource "azurerm_network_security_group" "wan-nsg" {
+  name                = "WAN-NSG"
   location            = azurerm_resource_group.sculk.location
   resource_group_name = azurerm_resource_group.sculk.name
 
@@ -26,4 +26,9 @@ resource "azurerm_network_security_group" "vpn-nsg" {
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
+}
+
+resource "azurerm_network_interface_security_group_association" "vpn-nsg-asc" {
+  network_interface_id      = azurerm_network_interface.wan.id
+  network_security_group_id = azurerm_network_security_group.wan-nsg.id
 }
