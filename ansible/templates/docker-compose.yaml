@@ -16,6 +16,47 @@ services:
     ports:
       - "192.168.71.1:80:80/tcp"
       - "192.168.71.1:443:443/tcp"
+    labels:
+      whalewall.enabled: true
+      whalewall.rules: |
+        mapped_ports:
+          external:
+            allow: true
+            ip: "192.168.71.0/24"
+        output:
+          # allow DNS requests
+          - log_prefix: "dns_udp"
+            proto: udp
+            port: 53
+          - log_prefix: "dns_tcp"
+            proto: tcp
+            port: 53
+          # allow HTTP requests
+          - log_prefix: "http"
+            proto: tcp
+            port: 80
+          # allow HTTPS requests
+          - log_prefix: "https"
+            proto: tcp
+            port: 443
+          # allow adguard/http requests
+          - log_prefix: "rocket"
+            network: default
+            container: adguard
+            proto: tcp
+            port: 80
+          # allow vaultwarden/http requests
+          - log_prefix: "rocket"
+            network: default
+            container: vaultwarden
+            proto: tcp
+            port: 80
+          # allow vaultwarden/rocket requests
+          - log_prefix: "rocket"
+            network: default
+            container: vaultwarden
+            proto: tcp
+            port: 3012
   adguard:
     container_name: adguard
     image: adguard/adguardhome:latest
@@ -26,6 +67,29 @@ services:
     ports:
       - "192.168.71.1:53:53/udp"
       - "192.168.71.1:53:53/tcp"
+    labels:
+      whalewall.enabled: true
+      whalewall.rules: |
+        mapped_ports:
+          external:
+            allow: true
+            ip: "192.168.71.0/24"
+        output:
+          # allow DNS requests
+          - log_prefix: "dns_udp"
+            proto: udp
+            port: 53
+          - log_prefix: "dns_tcp"
+            proto: tcp
+            port: 53
+          # allow HTTPS requests
+          - log_prefix: "https"
+            proto: tcp
+            port: 443
+            # allow DNS over TLS requests
+          - log_prefix: "dns_tls"
+            proto: tcp
+            port: 853
   vaultwarden:
     container_name: vaultwarden
     image: vaultwarden/server:latest
@@ -36,13 +100,43 @@ services:
         SIGNUPS_ALLOWED: "true"
     volumes:
       - "vaultwarden_vol:/data/"
-
+    labels:
+      whalewall.enabled: true
+      whalewall.rules: |
+        output:
+          # allow DNS requests
+          - log_prefix: "dns_udp"
+            proto: udp
+            port: 53
+          - log_prefix: "dns_tcp"
+            proto: tcp
+            port: 53
+          # allow HTTP requests
+          - log_prefix: "http"
+            proto: tcp
+            port: 80
+          # allow HTTPS requests
+          - log_prefix: "https"
+            proto: tcp
+            port: 443
+  whalewall:
+    container_name: whalewall
+    image: ghcr.io/capnspacehook/whalewall:latest
+    restart: unless-stopped
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "whalewall_data_vol:/data"
+      
 volumes:
   caddy_config:
   caddy_data_vol:
   adguard_work:
   vaultwarden_vol:
     external: true
+  whalewall_data_vol:
 
 
 

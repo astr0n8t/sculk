@@ -34,18 +34,14 @@
         name: ufw.service
         state: started
         enabled: true
+      notify:
+        - Allow temporary general SSH access
 
     - name: Enable Docker
       ansible.builtin.systemd:
         name: docker.service
         state: started
         enabled: true
-
-    - name: Allow temporary general SSH access
-      community.general.ufw:
-        rule: allow
-        port: ssh
-        proto: tcp
 
     - name: Enable UFW
       community.general.ufw:
@@ -70,3 +66,10 @@
         state: present
         key: "{{ lookup('file', 'authorized_keys') }}"
         exclusive: true
+
+  handlers:
+    - name: Allow temporary general SSH access
+      community.general.ufw:
+        rule: allow
+        port: ssh
+        proto: tcp

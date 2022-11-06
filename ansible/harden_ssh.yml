@@ -1,6 +1,7 @@
 - hosts: all
   name: Harden SSH
   tags: [always]
+  become: true
   tasks:
     - name: Include vault vars
       ansible.builtin.include_vars:
