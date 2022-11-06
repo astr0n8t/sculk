@@ -49,5 +49,5 @@ CMD [ "sleep", "infinity" ]
 # [Optional] Uncomment this section to install additional OS packages.
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends python3 \
-    python3-pip whois apache2-utils wireguard-tools \
+    python3-pip whois apache2-utils wireguard-tools figlet \
     && pip3 install ansible ansible-lint 

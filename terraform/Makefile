@@ -2,6 +2,7 @@ all:
 	terraform apply
 	./duckdns.sh
 setup:
+	./setup.sh
 	terraform login
 clean:
 	terraform destroy

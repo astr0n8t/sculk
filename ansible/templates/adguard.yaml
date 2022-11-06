@@ -77,7 +77,7 @@ dns:
   local_ptr_upstreams: []
 tls:
   enabled: true
-  server_name: "{{ duckdns_domain }}"
+  server_name: "dns.{{ duckdns_domain }}"
   force_https: false
   port_https: 443
   port_dns_over_tls: 0

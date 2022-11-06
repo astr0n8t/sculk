@@ -7,7 +7,6 @@ services:
     restart: unless-stopped
     environment:
       DOMAIN: "{{ duckdns_domain }}"
-      EMAIL: "{{ letsencrypt_email }}"
       DUCKDNS_TOKEN: "{{ duckdns_token }}"
     volumes:
       - "/etc/caddy/Caddyfile:/etc/caddy/Caddyfile:ro"
