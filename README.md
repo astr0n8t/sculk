@@ -21,7 +21,7 @@ See [REQUIREMENTS.md](docs/REQUIREMENTS.md)
 
 See [SETUP.md](docs/SETUP.md)
 
-## Deployment
+## Install
 
-See [DEPLOYMENT.md](docs/DEPLOYMENT.md)
+See [INSTALL.md](docs/INSTALL.md)
 
