@@ -3,7 +3,7 @@
 <br>
 <h2 align="center">sculk</h2>
 </p>
-A Infrastructure as Code example deploying a VM with WireGuard and vaultwarden plus AdGuard Home.
+An Infrastructure as Code example deploying a VM with WireGuard and vaultwarden plus AdGuard Home.
 
 ## Why?
 
