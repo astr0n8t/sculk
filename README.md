@@ -1,7 +1,8 @@
-# sculk
-
-![sculk](https://static.wikia.nocookie.net/minecraft_gamepedia/images/6/67/Sculk_JE1_BE1.gif)
-
+<p align="center">
+<img src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/6/67/Sculk_JE1_BE1.gif">
+<br>
+<h2 align="center">sculk</h2>
+</p>
 A Infrastructure as Code example deploying a VM with WireGuard and vaultwarden plus AdGuard Home.
 
 ## Why?
