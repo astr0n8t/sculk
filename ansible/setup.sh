@@ -101,6 +101,7 @@ echo
 echo "duckdns_token: $REPLY" >> vault_vars.yml
 read -p "Please enter your username for Sculk: "
 echo "sculk_username: $REPLY" >> vault_vars.yml
+echo "username = \"$REPLY\"" > ../terraform/variables.tfvars
 read -s -p "Please enter your password for Sculk: "
 echo
 USER_HASH=$(mkpasswd --method=sha-512 $REPLY)

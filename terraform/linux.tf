@@ -16,13 +16,13 @@ resource "azurerm_linux_virtual_machine" "sculk" {
   resource_group_name = azurerm_resource_group.sculk.name
   location            = azurerm_resource_group.sculk.location
   size                = "Standard_B1s"
-  admin_username      = "astr0n8t"
+  admin_username      = var.username
   network_interface_ids = [
     azurerm_network_interface.wan.id,
   ]
 
   admin_ssh_key {
-    username   = "astr0n8t"
+    username   = var.username
     public_key = file("../id_rsa.pub")
   }
 
