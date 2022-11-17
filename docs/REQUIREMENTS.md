@@ -34,6 +34,9 @@ Install the client for your OS here: https://www.wireguard.com/install/
 
 This repository is equipped with a VS Code dev container that contains all of the necessary dependencies.  To take advantage of this, simply install Docker and VS Code, and open this repository in VS Code.  It should prompt you to re-open in a dev container, and once you do it will build the container and open VS Code from within the container.
 
+[Docker Desktop](https://www.docker.com/products/docker-desktop/)
+[VS Code](https://code.visualstudio.com/)
+
 ## Git
 
 You will need a git client to clone this repository.  Either install git in WSL or install [Git for Windows](https://git-scm.com/download/win).
